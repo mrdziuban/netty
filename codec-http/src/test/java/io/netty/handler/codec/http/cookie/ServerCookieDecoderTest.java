@@ -58,6 +58,42 @@ public class ServerCookieDecoderTest {
     }
 
     @Test
+    public void testDecodingCookieWithNoSpaces() {
+        String c1 = "myCookie=myValue;";
+        String c2 = "myCookie2=myValue2;";
+
+        Set<Cookie> cookies = ServerCookieDecoder.STRICT.decode(c1 + c2);
+        assertEquals(2, cookies.size());
+        Iterator<Cookie> it = cookies.iterator();
+        Cookie cookie = it.next();
+        assertNotNull(cookie);
+        assertEquals("myCookie", cookie.name());
+        assertEquals("myValue", cookie.value());
+        cookie = it.next();
+        assertNotNull(cookie);
+        assertEquals("myCookie2", cookie.name());
+        assertEquals("myValue2", cookie.value());
+    }
+
+    @Test
+    public void testDecodingCookieWithMultipleSpaces() {
+        String c1 = "myCookie=myValue;";
+        String c2 = "myCookie2=myValue2;";
+
+        Set<Cookie> cookies = ServerCookieDecoder.STRICT.decode(c1 + "  " + c2);
+        assertEquals(2, cookies.size());
+        Iterator<Cookie> it = cookies.iterator();
+        Cookie cookie = it.next();
+        assertNotNull(cookie);
+        assertEquals("myCookie", cookie.name());
+        assertEquals("myValue", cookie.value());
+        cookie = it.next();
+        assertNotNull(cookie);
+        assertEquals("myCookie2", cookie.name());
+        assertEquals("myValue2", cookie.value());
+    }
+
+    @Test
     public void testDecodingAllMultipleCookies() {
         String c1 = "myCookie=myValue;";
         String c2 = "myCookie=myValue2;";
